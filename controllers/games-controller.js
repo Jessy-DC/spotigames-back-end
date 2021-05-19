@@ -10,7 +10,7 @@ let DUMMY_GAMES = [
 ]
 
 const getGames = async (req, res, next) => {
-    res.json({games: DUMMY_GAMES});
+    res.status(200).json({games: DUMMY_GAMES});
 }
 
 const addGames = async (req, res, next) => {
