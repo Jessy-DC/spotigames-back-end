@@ -18,6 +18,8 @@ let DUMMY_USERS = [
     }
 ]
 
+const User = require('../models/user');
+
 const getUsers = async (req, res, next) => {
     res.json({users: DUMMY_USERS});
 }
