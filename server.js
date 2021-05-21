@@ -6,6 +6,7 @@ const app = express();
 
 const usersRoutes = require('./routes/users-routes');
 const gamesRoute = require('./routes/games-routes');
+const genresRoutes = require('./routes/genres-routes');
 
 app.use(bodyParser.json());
 
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 
 app.use('/api/users', usersRoutes);
 app.use('/api/games', gamesRoute);
+app.use('/api/genres', genresRoutes)
 
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.lh6or.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
     .then(() => {
