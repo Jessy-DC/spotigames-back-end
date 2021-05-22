@@ -106,5 +106,75 @@ const signup = async (req, res, next) => {
     res.status(201).json({userId: createdUser.id, email: createdUser.email, token: token});
 }
 
+const login = async (req, res, next) => {
+    const {email, username, password} = req.body;
+
+    let existingUser;
+
+    try {
+        if (email) {
+            existingUser = await User.findOne({email: email})
+        } else if (username) {
+            existingUser = await User.findOne({username: username})
+        }
+    } catch (err) {
+        const error = new HttpError(
+            'Logging in failed, please try again later',
+            500
+        );
+        return next(error);
+    }
+
+    if (!existingUser) {
+        const error = new HttpError(
+            'Invalid credentials could not log you in',
+            403
+        );
+        return next(error);
+    }
+
+    let isValidPassword = false;
+    try {
+        isValidPassword = await bcrypt.compare(password, existingUser.password);
+    } catch (err) {
+        const error = new HttpError(
+            'Could not log you in, please check your credentials and try again',
+            500
+        );
+        return next(error)
+    }
+
+    if (!isValidPassword) {
+        const error = new HttpError(
+            'Invalid credentials, could not log you in',
+            401
+        );
+        return next(error);
+    }
+
+    let token;
+
+    try {
+        token = jwt.sign(
+            {userId: existingUser.id, email: existingUser},
+            'supersecret_spotigames_dont_share',
+            { expiresIn: '1h'}
+        );
+    } catch (err) {
+        const error = new HttpError(
+            'Logging in failed, please try again later.',
+            500
+        );
+        return next(error);
+    }
+
+    res.status(200).json({
+        userId: existingUser.id,
+        email: existingUser.email,
+        token: token
+    })
+}
+
 exports.getUsers = getUsers;
 exports.signup = signup;
+exports.login = login;

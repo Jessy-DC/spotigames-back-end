@@ -19,4 +19,6 @@ router.post('/signup',
             .isLength({min: 7})
     ], usersController.signup);
 
+router.post('/login', usersController.login)
+
 module.exports = router;
